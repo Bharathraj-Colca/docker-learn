@@ -48,8 +48,8 @@ jobs:
 
       - name: Tag Docker image
         run: |
-        echo "Username: ${{ secrets.DOCKER_USERNAME }}"
-        docker tag mock-api:test "${{ secrets.DOCKER_USERNAME }}/mock-api:latest"
+          echo "Username: ${{ secrets.DOCKER_USERNAME }}"
+          docker tag mock-api:test "${{ secrets.DOCKER_USERNAME }}/mock-api:latest"
 
       # 7️⃣ Push it
       - name: Push Docker image
