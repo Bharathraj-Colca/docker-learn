@@ -13,40 +13,36 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Build containers
-        run: docker compose up -d --build
-
-      - name: Wait for services
-        run: sleep 10
-
-      - name: Create database tables
-        run: docker exec fastapi_app python setup_db_tables.py
-
-      - name: Run tests
-        run: pytest -v
-
-      - name: Check secret
-        run: echo "Username exists"
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      
       - name: Log in to DockerHub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/mock-api:latest
+      # 1️⃣ Build the Docker image
+      - name: Build Docker image
+        run: docker build -t mock-api:test .
+
+      # 2️⃣ Start containers using that image
+      - name: Start services
+        run: docker compose up -d
+
+      # 3️⃣ Wait for services
+      - name: Wait for API
+        run: sleep 10
+
+      # 4️⃣ Create database tables
+      - name: Setup database
+        run: docker exec fastapi_app python setup_db_tables.py
+
+      # 5️⃣ Run tests
+      - name: Run tests
+        run: pytest -v
+
+      # 6️⃣ Tag the SAME tested image
+      - name: Tag Docker image
+        run: docker tag mock-api:test ${{ secrets.DOCKER_USERNAME }}/mock-api:latest
+
+      # 7️⃣ Push it
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/mock-api:latest
