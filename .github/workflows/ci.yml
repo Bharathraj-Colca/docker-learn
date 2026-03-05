@@ -45,7 +45,12 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/mock-api:latest .
+        run: docker build -t $DOCKER_USERNAME/mock-api:latest .
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
 
-      - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/mock-api:latest
+      - name: Build and push image
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/mock-api:latest
