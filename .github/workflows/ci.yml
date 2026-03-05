@@ -1,0 +1,29 @@
+name: FastAPI Docker CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build containers
+        run: docker compose up -d --build
+
+      - name: Wait for services
+        run: sleep 10
+
+      - name: Create database tables
+        run: docker exec fastapi_app python setup_db_tables.py
+
+      - name: Install pytest
+        run: pip install pytest
+
+      - name: Run tests
+        run: pytest -v

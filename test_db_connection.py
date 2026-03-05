@@ -1,8 +1,9 @@
 from database import engine
 
-try:
+def test_db_connection():
+
     connection = engine.connect()
-    print("✅ Database connected successfully!")
+
+    assert connection is not None
+
     connection.close()
-except Exception as e:
-    print("❌ Connection failed:", e)
