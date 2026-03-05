@@ -19,6 +19,14 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
+        name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
       # 1️⃣ Build the Docker image
       - name: Build Docker image
         run: docker build -t mock-api:test .
@@ -35,13 +43,7 @@ jobs:
       - name: Setup database
         run: docker exec fastapi_app python setup_db_tables.py
 
-        name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+        
 
       # 5️⃣ Run tests
       - name: Run tests
