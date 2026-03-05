@@ -35,6 +35,14 @@ jobs:
       - name: Setup database
         run: docker exec fastapi_app python setup_db_tables.py
 
+        name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
       # 5️⃣ Run tests
       - name: Run tests
         run: pytest -v
