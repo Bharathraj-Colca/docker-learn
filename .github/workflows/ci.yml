@@ -33,6 +33,11 @@ jobs:
       - name: Run tests
         run: pytest -v
 
+      - name: Check secret
+        run: echo "Username exists"
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      
       - name: Log in to DockerHub
         uses: docker/login-action@v3
         with:
