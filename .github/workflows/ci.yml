@@ -49,7 +49,6 @@ jobs:
       # 6️⃣ Tag the SAME tested image
       - name: Tag Docker image
         run: docker tag mock-api:test ${{ secrets.DOCKER_USERNAME }}/mock-api:latest
-        #test
 
       # 7️⃣ Push it
       - name: Push Docker image
